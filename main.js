@@ -7,18 +7,21 @@ const cardShoes = document.querySelector(".card"),
 console.log("innerHTML: ", emptyText);
 
 // imgShoes = cardShoes.querySelector(".card-body .shop-item-image img");
-
+let dataFetch = [];
 fetch("./data/shoes.json")
 	.then((response) => {
 		return response.json();
 	})
 	.then((data) => {
 		detailShoes(data.shoes);
-		// console.log("data: ", data.shoes);
+		dataFetch.push(...data.shoes);
+		console.log(data);
 	})
 	.catch(() => console.log("err!!!"));
+let Cart = JSON.parse(localStorage.getItem("cartItems")) || [];
 
 const detailShoes = (value) => {
+	// dataFetch.push(...value);
 	console.log(value.length);
 	for (let i = 0; i < value.length; i++) {
 		const p = value[i];
@@ -40,19 +43,34 @@ const detailShoes = (value) => {
 		console.log("cart data:", carts.length);
 		carts[i].addEventListener("click", () => {
 			cartNumbers(value[i]);
+			carts[i].innerHTML = `<img class="icon-check" src="./images/check.png"/>`;
+			carts[i].classList.add("circle");
 		});
 	}
+	nha(carts);
 };
-let Cart = JSON.parse(localStorage.getItem("cartItems")) || [];
+// console.log("carts: ", carts);
+console.log("dataFetch: ", dataFetch);
+const nha = (carts) => {
+	Cart.forEach((item) => {
+		if (item.check === true) {
+			carts[item.id - 1].classList.add("circle");
+			carts[
+				item.id - 1
+			].innerHTML = `<img class="icon-check" src="./images/check.png"/>`;
+		} else {
+			carts[item.id - 1].classList.add("");
+		}
+	});
+};
+
 console.log("data", Cart);
 const cartNumbers = (products) => {
 	if (Cart.some((item) => item.id === products.id)) {
-		alert("product exist!!!");
+		console.log("trung");
 	} else {
-		Cart.push({ ...products, count: 1 });
+		Cart.push({ ...products, count: 1, check: true });
 	}
-	console.log("cart User: ", Cart);
-
 	updateCart();
 };
 
@@ -62,9 +80,10 @@ const updateCart = () => {
 	} else {
 		emptyText.innerText = "";
 	}
-	console.log("save cart: ", saveCart);
 	saveCart.innerHTML = "";
 	Cart.forEach((item) => {
+		console.log("item: ", item);
+
 		saveCart.innerHTML += `<div class="cart-item">
 							<div class="cart-item-left">
 								<div class="cart-item-image" style="background-color: ${item.color};">
@@ -110,20 +129,25 @@ const totalPrice = () => {
 	});
 	console.log(total);
 	totalItem.innerText = `$${total.toFixed(2)}`;
-	console.log("sum: ", totalItem);
 };
 
 //
+let idRemove;
 const deleteProduct = (id) => {
-	Cart = Cart.filter((item) => item.id !== id);
+	Cart = Cart.filter((item) => {
+		return item.id !== id;
+	});
+	console.log("remove: ", id);
+	idRemove = id;
+	console.log("show remove: ", idRemove);
 	updateCart();
+	location.reload();
 };
 
 //
 const handleCount = (action, id) => {
 	Cart = Cart.map((item) => {
 		let count = item.count;
-
 		if (item.id === id) {
 			if (action === "decrease") {
 				count--;
@@ -131,8 +155,6 @@ const handleCount = (action, id) => {
 				count++;
 			}
 		}
-		console.log("count: ", count);
-		console.log("item: ", item);
 		return { ...item, count };
 	});
 	updateCart();
