@@ -47,6 +47,7 @@ const detailShoes = (value) => {
 			carts[i].classList.add("circle");
 		});
 	}
+
 	nha(carts);
 };
 // console.log("carts: ", carts);
@@ -65,14 +66,6 @@ const nha = (carts) => {
 };
 
 console.log("data", Cart);
-const cartNumbers = (products) => {
-	if (Cart.some((item) => item.id === products.id)) {
-		console.log("trung");
-	} else {
-		Cart.push({ ...products, count: 1, check: true });
-	}
-	updateCart();
-};
 
 const updateCart = () => {
 	if (Cart.length <= 0) {
@@ -83,7 +76,6 @@ const updateCart = () => {
 	saveCart.innerHTML = "";
 	Cart.forEach((item) => {
 		console.log("item: ", item);
-
 		saveCart.innerHTML += `<div class="cart-item">
 							<div class="cart-item-left">
 								<div class="cart-item-image" style="background-color: ${item.color};">
@@ -116,9 +108,30 @@ const updateCart = () => {
 								</div>
 							</div>
 						</div>`;
+		// let smooth = document.querySelector(".cart-item");
+		// setTimeout(function () {
+		// 	smooth.classList.add("runn");
+		// }, 2000);
+		// smooth.classList.remove("running");
+		// smooth[item.id - 1].classList.remove("running");
+		// console.log("smooth: ", smooth, item.id);
+		// setTimeout(function () {
+		// 	smooth[item.id - 1].classList.add("running");
+		// }, 2000);
 	});
 	totalPrice();
 	localStorage.setItem("cartItems", JSON.stringify(Cart));
+};
+
+const cartNumbers = (products) => {
+	console.log("id pr:", products.id);
+	if (Cart.some((item) => item.id === products.id)) {
+		console.log(".");
+	} else {
+		Cart.push({ ...products, count: 1, check: true });
+	}
+	// }
+	updateCart();
 };
 
 // total price
@@ -137,11 +150,14 @@ const deleteProduct = (id) => {
 	Cart = Cart.filter((item) => {
 		return item.id !== id;
 	});
+
+	// thu.classList.remove;
 	console.log("remove: ", id);
-	idRemove = id;
-	console.log("show remove: ", idRemove);
+	let thu = document.querySelectorAll(".shop-item-button");
+	thu[id - 1].classList.remove("circle");
+	thu[id - 1].innerText = "ADD to CART";
+	console.log("thu: ", thu);
 	updateCart();
-	location.reload();
 };
 
 //

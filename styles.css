@@ -187,11 +187,14 @@ body {
 .cart-title-amount {
 	float: right;
 }
+
 .cart-item {
 	display: flex;
 	padding: 20px 0;
-	/* display: none; */
-
+}
+.running {
+	display: flex;
+	padding: 20px 0;
 	animation: smooth 3s cubic-bezier(0.27, 0.44, 0.88, 0.53);
 }
 .cart-item-left {
