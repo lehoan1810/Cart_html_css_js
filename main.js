@@ -23,7 +23,7 @@ const detailShoes = (value) => {
 							<div class="shop-item-name">${p.name}</div>
 							<div class="shop-item-description">${p.description}</div>
 							<div class="shop-item-bottom">
-							<div class="shop-item-price">${p.price}</div>
+							<div class="shop-item-price">$${p.price.toFixed(2)}</div>
 							<div class="shop-item-button">ADD TO CART</div>
 							</div>
 						</div>`;
@@ -75,7 +75,7 @@ const updateCart = () => {
 							</div>
 							<div class="cart-item-right">
 								<div class="cart-item-name">${item.name}</div>
-								<div class="cart-item-price">$${item.price}</div>
+								<div class="cart-item-price">$${item.price.toFixed(2)}</div>
 								<div class="cart-item-actions">
 									<div class="cart-item-count">
 										<div class="cart-item-count-button" onclick="handleDecrease(${item.id})">-</div>
