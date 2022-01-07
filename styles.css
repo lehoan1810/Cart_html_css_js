@@ -195,7 +195,20 @@ body {
 .running {
 	display: flex;
 	padding: 20px 0;
-	animation: smooth 3s cubic-bezier(0.27, 0.44, 0.88, 0.53);
+	animation: smooth ease-in-out 0.6s;
+}
+.delete-effect {
+	display: flex;
+	padding: 20px 0;
+	animation: deleteEffect ease-in-out 0.6s;
+}
+@keyframes deleteEffect {
+	from {
+		transform: scale(1);
+	}
+	to {
+		transform: scale(0);
+	}
 }
 .cart-item-left {
 	flex: 0;
@@ -294,12 +307,14 @@ body {
 }
 @keyframes smooth {
 	from {
-		transform: translateX(340px);
-		transition: 3s ease-in-out;
+		/* transform: translateX(340px);
+		transition: 3s ease-in-out; */
+		transform: scale(0);
 	}
 	to {
-		transform: translateX(-4px);
-		transition: 3s ease-in-out;
+		/* transform: translateX(-4px);
+		transition: 3s ease-in-out; */
+		transform: scale(1);
 	}
 }
 @media screen and (max-width: 480px) {

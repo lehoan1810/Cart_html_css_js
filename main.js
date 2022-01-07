@@ -4,9 +4,6 @@ const cardShoes = document.querySelector(".card"),
 	emptyText = document.querySelector(".cart-empty-text"),
 	saveCart = document.querySelector(".cart-items");
 
-console.log("innerHTML: ", emptyText);
-
-// imgShoes = cardShoes.querySelector(".card-body .shop-item-image img");
 let dataFetch = [];
 fetch("./data/shoes.json")
 	.then((response) => {
@@ -15,14 +12,10 @@ fetch("./data/shoes.json")
 	.then((data) => {
 		detailShoes(data.shoes);
 		dataFetch.push(...data.shoes);
-		console.log(data);
 	})
 	.catch(() => console.log("err!!!"));
-let Cart = JSON.parse(localStorage.getItem("cartItems")) || [];
 
 const detailShoes = (value) => {
-	// dataFetch.push(...value);
-	console.log(value.length);
 	for (let i = 0; i < value.length; i++) {
 		const p = value[i];
 		items.innerHTML += `<div class="shop-item">
@@ -40,7 +33,6 @@ const detailShoes = (value) => {
 	let listItems = items.querySelector(".shop-item"),
 		carts = items.querySelectorAll(".shop-item .shop-item-button");
 	for (let i = 0; i < carts.length; i++) {
-		console.log("cart data:", carts.length);
 		carts[i].addEventListener("click", () => {
 			cartNumbers(value[i]);
 			carts[i].innerHTML = `<img class="icon-check" src="./images/check.png"/>`;
@@ -48,11 +40,11 @@ const detailShoes = (value) => {
 		});
 	}
 
-	nha(carts);
+	handleAddToCart(carts);
 };
 // console.log("carts: ", carts);
-console.log("dataFetch: ", dataFetch);
-const nha = (carts) => {
+let Cart = JSON.parse(localStorage.getItem("cartItems")) || [];
+const handleAddToCart = (carts) => {
 	Cart.forEach((item) => {
 		if (item.check === true) {
 			carts[item.id - 1].classList.add("circle");
@@ -65,18 +57,15 @@ const nha = (carts) => {
 	});
 };
 
-console.log("data", Cart);
-
 const updateCart = () => {
+	saveCart.innerHTML = "";
+	console.log("Cart length: ", Cart.length);
 	if (Cart.length <= 0) {
 		emptyText.innerText = "Your cart is empty.";
 	} else {
 		emptyText.innerText = "";
-	}
-	saveCart.innerHTML = "";
-	Cart.forEach((item) => {
-		console.log("item: ", item);
-		saveCart.innerHTML += `<div class="cart-item">
+		Cart.forEach((item) => {
+			saveCart.innerHTML += `<div class="cart-item">
 							<div class="cart-item-left">
 								<div class="cart-item-image" style="background-color: ${item.color};">
 									<div class="cart-item-image-block">
@@ -93,9 +82,9 @@ const updateCart = () => {
 								<div class="cart-item-price">$${item.price}</div>
 								<div class="cart-item-actions">
 									<div class="cart-item-count">
-										<div class="cart-item-count-button" onclick="handleCount('decrease',${item.id})">-</div>
+										<div class="cart-item-count-button" onclick="handleDecrease(${item.id})">-</div>
 										<div class="cart-item-count-number">${item.count}</div>
-										<div class="cart-item-count-button" onclick="handleCount('increase',${item.id})">+</div>
+										<div class="cart-item-count-button" onclick="handleIncrease(${item.id})">+</div>
 									</div>
 									<div onclick="deleteProduct(${item.id})" class="cart-item-remove">
 										<img
@@ -108,30 +97,41 @@ const updateCart = () => {
 								</div>
 							</div>
 						</div>`;
-		// let smooth = document.querySelector(".cart-item");
-		// setTimeout(function () {
-		// 	smooth.classList.add("runn");
-		// }, 2000);
-		// smooth.classList.remove("running");
-		// smooth[item.id - 1].classList.remove("running");
-		// console.log("smooth: ", smooth, item.id);
-		// setTimeout(function () {
-		// 	smooth[item.id - 1].classList.add("running");
-		// }, 2000);
-	});
+
+			// setTimeout(function () {
+			// 	smooth.classList.add("running");
+			// }, 2000);
+			// smooth.classList.remove("running");
+			// smooth[item.id - 1].classList.remove("running");
+			// console.log("smooth: ", smooth, item.id);
+			// setTimeout(function () {
+			// 	smooth[item.id - 1].classList.add("running");
+			// }, 2000);
+		});
+	}
 	totalPrice();
 	localStorage.setItem("cartItems", JSON.stringify(Cart));
 };
 
 const cartNumbers = (products) => {
+	// updateCart();
 	console.log("id pr:", products.id);
 	if (Cart.some((item) => item.id === products.id)) {
-		console.log(".");
+		// console.log(".");
+		return;
 	} else {
 		Cart.push({ ...products, count: 1, check: true });
 	}
-	// }
+
 	updateCart();
+	console.log("detail: ", products);
+	// let smooth = document.querySelectorAll(".cart-item");
+	// console.log("cart item: ", smooth);
+	// console.log("id-1: ", products.id - 1);
+	// smooth[products.id - 1].classList.add("running");
+	// setTimeout(() => {
+	// 	smooth[products.id - 1].classList.remove("running");
+	// }, 3000);
 };
 
 // total price
@@ -140,36 +140,53 @@ const totalPrice = () => {
 	Cart.forEach((item) => {
 		total += item.price * item.count;
 	});
-	console.log(total);
 	totalItem.innerText = `$${total.toFixed(2)}`;
 };
+// updateCart();
 
 //
-let idRemove;
 const deleteProduct = (id) => {
 	Cart = Cart.filter((item) => {
 		return item.id !== id;
 	});
+	console.log("Cart: ", Cart);
+	let change = document.querySelectorAll(".shop-item-button");
+	change[id - 1].classList.remove("circle");
+	change[id - 1].innerText = "ADD TO CART";
+	// let smooth = document.querySelectorAll(".cart-item");
+	// console.log("delete effect: ", smooth);
+	// smooth[id - 1].classList.add("delete-effect");
+	// setTimeout(() => {
+	// 	smooth[id - 1].classList.remove("delete-effect");
+	// }, 3000);
+	// let smooths = document.querySelectorAll(".cart-item");
 
-	// thu.classList.remove;
-	console.log("remove: ", id);
-	let thu = document.querySelectorAll(".shop-item-button");
-	thu[id - 1].classList.remove("circle");
-	thu[id - 1].innerText = "ADD to CART";
-	console.log("thu: ", thu);
+	updateCart();
+	// smooth[id - 1].classList.add("delete-effect");
+	// setTimeout(() => {
+	// 	smooth[id - 1].classList.remove("delete-effect");
+	// }, 3000);
+};
+//
+const handleDecrease = (id) => {
+	for (let i = 0; i < Cart.length; i++) {
+		if (Cart[i].id == id) {
+			Cart[i].count -= 1;
+		}
+		if (Cart[i].count <= 0) {
+			Cart.splice(i, 1);
+			let change = document.querySelectorAll(".shop-item-button");
+			change[id - 1].classList.remove("circle");
+			change[id - 1].innerText = "ADD TO CART";
+		}
+	}
 	updateCart();
 };
-
-//
-const handleCount = (action, id) => {
+const handleIncrease = (id) => {
 	Cart = Cart.map((item) => {
 		let count = item.count;
 		if (item.id === id) {
-			if (action === "decrease") {
-				count--;
-			} else if (action === "increase") {
-				count++;
-			}
+			count++;
 		}
 		return { ...item, count };
 	});
